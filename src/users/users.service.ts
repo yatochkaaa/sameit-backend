@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { User } from "./users.model";
@@ -15,5 +15,14 @@ export class UsersService {
   async getAllUsers() {
     const users = await this.userRepository.findAll();
     return users;
+  }
+
+  async deleteUser(id: number) {
+    try {
+      await this.userRepository.destroy({ where: { id } });
+      return `Пользователь c id: ${id} успешно удалён`;
+    } catch (err) {
+      throw new HttpException("Пользователь не найден.", HttpStatus.NOT_FOUND);
+    }
   }
 }
