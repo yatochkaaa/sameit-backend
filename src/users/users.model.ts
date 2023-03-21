@@ -1,10 +1,11 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
 
-type UserRoles = "admin" | "user";
+export type UserRoles = "admin" | "user";
 
 interface UserCreationAttrs {
   email: string;
   username: string;
+  role: UserRoles;
 }
 
 @Table({ tableName: "users" })
