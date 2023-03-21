@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, HasOne, Model, Table } from "sequelize-typescript";
+import { Profile } from "src/profiles/profiles.model";
 
 export enum UserRole {
   Admin = 'admin',
@@ -40,4 +41,7 @@ export class User extends Model<User, UserCreationAttrs> {
     defaultValue: UserRole.User,
   })
   role: UserRole;
+
+  @HasOne(() => Profile)
+  profile: Profile
 }
