@@ -1,11 +1,14 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
 
-export type UserRoles = "admin" | "user";
+export enum UserRole {
+  Admin = 'admin',
+  User = 'user',
+}
 
 interface UserCreationAttrs {
   email: string;
   username: string;
-  role: UserRoles;
+  role: UserRole;
 }
 
 @Table({ tableName: "users" })
@@ -34,7 +37,7 @@ export class User extends Model<User, UserCreationAttrs> {
 
   @Column({
     type: DataType.STRING,
-    defaultValue: "user",
+    defaultValue: UserRole.User,
   })
-  role: UserRoles;
+  role: UserRole;
 }

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { User } from "./users.model";
+import { User, UserRole } from "./users.model";
 
 @Injectable()
 export class UsersService {
@@ -17,10 +17,20 @@ export class UsersService {
     return users;
   }
 
+  async getUsersByRole(role: UserRole) {
+    if (!Object.values(UserRole).includes(role)) {
+      throw new HttpException("Роли не найдены", HttpStatus.NOT_FOUND);
+    }
+
+    const users = await this.userRepository.findAll({ where: { role } });
+
+    return users;
+  }
+
   async deleteUser(id: number) {
     try {
       await this.userRepository.destroy({ where: { id } });
-      return `Пользователь c id: ${id} успешно удалён`;
+      return `Пользователь c id ${id} успешно удалён`;
     } catch (err) {
       throw new HttpException("Пользователь не найден.", HttpStatus.NOT_FOUND);
     }

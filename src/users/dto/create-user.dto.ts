@@ -1,7 +1,7 @@
-import { UserRoles } from "../users.model";
+import { UserRole } from "../users.model";
 
 export class CreateUserDto {
   readonly email: string;
   readonly username: string;
-  readonly role: UserRoles;
+  readonly role: UserRole;
 }
