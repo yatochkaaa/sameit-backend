@@ -13,16 +13,16 @@ export class UsersService {
   ) {}
 
   async createUser(dto: CreateUserDto & CreateProfileDto): Promise<User> {
+    const profile = await this.profileService.createProfile({
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      state: dto.state,
+    });
     const user = await this.userRepository.create({
       email: dto.email,
       username: dto.username,
       role: dto.role,
-    });
-    await this.profileService.createProfile({
-      firstName: dto.firstName,
-      lastName: dto.lastName,
-      state: dto.state,
-      userId: user.id
+      profileId: profile.id,
     });
 
     return user;
