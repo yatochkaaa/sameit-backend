@@ -12,7 +12,7 @@ interface ProfileCreationAttrs {
   state: State;
 }
 
-@Table({ tableName: "profiles" })
+@Table({ tableName: "profiles", updatedAt: false, createdAt: false })
 export class Profile extends Model<Profile, ProfileCreationAttrs> {
   @Column({
     type: DataType.INTEGER,

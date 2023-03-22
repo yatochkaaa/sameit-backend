@@ -12,7 +12,7 @@ export class UsersService {
     private profileService: ProfilesService
   ) {}
 
-  async createUser(dto: UserDto & ProfileDto): Promise<User> {
+  async createUser(dto: UserDto & ProfileDto): Promise<UserDto & ProfileDto> {
     const profile = await this.profileService.createProfile({
       firstName: dto.firstName,
       lastName: dto.lastName,
@@ -25,7 +25,7 @@ export class UsersService {
       profileId: profile.id,
     });
 
-    return user;
+    return { ...user.dataValues, ...profile.dataValues };
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -38,7 +38,10 @@ export class UsersService {
       throw new HttpException("Неправильный запрос", HttpStatus.BAD_REQUEST);
     }
 
-    const users = await this.userRepository.findAll({ where: { ...query } });
+    const users = await this.userRepository.findAll({
+      where: { ...query },
+      include: { all: true },
+    });
 
     return users;
   }
@@ -46,7 +49,7 @@ export class UsersService {
   async updateUser(
     id: number,
     updatedUser: UserDto & ProfileDto
-  ): Promise<User> {
+  ): Promise<UserDto & ProfileDto> {
     const user = await this.userRepository.findByPk(id);
     const profile = await this.profileService.getProfile(user.profileId);
 
@@ -67,7 +70,7 @@ export class UsersService {
     user.save();
     profile.save();
 
-    return user;
+    return { ...user.dataValues, ...profile.dataValues };
   }
 
   async deleteUser(id: number): Promise<User> {

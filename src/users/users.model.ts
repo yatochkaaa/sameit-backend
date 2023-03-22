@@ -20,7 +20,7 @@ interface UserCreationAttrs {
   profileId: number;
 }
 
-@Table({ tableName: "users" })
+@Table({ tableName: "users", updatedAt: false })
 export class User extends Model<User, UserCreationAttrs> {
   @Column({
     type: DataType.INTEGER,
