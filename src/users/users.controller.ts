@@ -1,15 +1,24 @@
-import { Body, Controller, Post, Get, Delete, Param, Query } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UserRole } from './users.model';
-import { UsersService } from './users.service';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  Delete,
+  Param,
+  Query,
+  Put,
+} from "@nestjs/common";
+import { ProfileDto } from "src/profiles/dto/profile.dto";
+import { UserDto } from "./dto/user.dto";
+import { UsersService } from "./users.service";
 
-@Controller('users')
+@Controller("users")
 export class UsersController {
   constructor(private userService: UsersService) {}
 
-  @Post('registration')
-  create(@Body() userDto: CreateUserDto) {
-    return this.userService.createUser(userDto);
+  @Post("registration")
+  create(@Body() dto: UserDto & ProfileDto) {
+    return this.userService.createUser(dto);
   }
 
   @Get()
@@ -18,11 +27,16 @@ export class UsersController {
   }
 
   @Post()
-  getByRole(@Query('role') role: UserRole) {
-    return this.userService.getUsersByRole(role);
+  getByFilter(@Query() query: UserDto) {
+    return this.userService.getUsersByFilter(query);
   }
 
-  @Delete(':id')
+  @Put(":id")
+  async update(@Param("id") id: number, @Body() updatedUser: UserDto & ProfileDto) {
+    return this.userService.updateUser(id, updatedUser);
+  }
+
+  @Delete(":id")
   delete(@Param("id") id: number) {
     return this.userService.deleteUser(id);
   }

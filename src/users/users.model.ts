@@ -1,17 +1,26 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from "sequelize-typescript";
+import { Profile } from "src/profiles/profiles.model";
 
 export enum UserRole {
-  Admin = 'admin',
-  User = 'user',
+  Admin = "admin",
+  User = "user",
 }
 
 interface UserCreationAttrs {
   email: string;
   username: string;
   role: UserRole;
+  profileId: number;
 }
 
-@Table({ tableName: "users" })
+@Table({ tableName: "users", updatedAt: false })
 export class User extends Model<User, UserCreationAttrs> {
   @Column({
     type: DataType.INTEGER,
@@ -40,4 +49,11 @@ export class User extends Model<User, UserCreationAttrs> {
     defaultValue: UserRole.User,
   })
   role: UserRole;
+
+  @ForeignKey(() => Profile)
+  @Column({ type: DataType.INTEGER })
+  profileId: number;
+
+  @BelongsTo(() => Profile)
+  profile: Profile;
 }
