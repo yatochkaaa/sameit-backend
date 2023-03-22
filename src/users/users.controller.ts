@@ -8,8 +8,7 @@ import {
   Query,
 } from "@nestjs/common";
 import { ProfileDto } from "src/profiles/dto/profile.dto";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UserRole } from "./users.model";
+import { UserDto } from "./dto/user.dto";
 import { UsersService } from "./users.service";
 
 @Controller("users")
@@ -17,7 +16,7 @@ export class UsersController {
   constructor(private userService: UsersService) {}
 
   @Post("registration")
-  create(@Body() dto: CreateUserDto & ProfileDto) {
+  create(@Body() dto: UserDto & ProfileDto) {
     return this.userService.createUser(dto);
   }
 
@@ -27,7 +26,7 @@ export class UsersController {
   }
 
   @Post()
-  getByFilter(@Query() query) {
+  getByFilter(@Query() query: UserDto) {
     return this.userService.getUsersByFilter(query);
   }
 

@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { ProfileDto } from "src/profiles/dto/profile.dto";
 import { ProfilesService } from "src/profiles/profiles.service";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { User, UserRole } from "./users.model";
+import { UserDto } from "./dto/user.dto";
+import { User } from "./users.model";
 
 @Injectable()
 export class UsersService {
@@ -12,7 +12,7 @@ export class UsersService {
     private profileService: ProfilesService
   ) {}
 
-  async createUser(dto: CreateUserDto & ProfileDto): Promise<User> {
+  async createUser(dto: UserDto & ProfileDto): Promise<User> {
     const profile = await this.profileService.createProfile({
       firstName: dto.firstName,
       lastName: dto.lastName,
@@ -33,7 +33,7 @@ export class UsersService {
     return users;
   }
 
-  async getUsersByFilter(query): Promise<User[]> {
+  async getUsersByFilter(query: UserDto): Promise<User[]> {
     if (Object.keys(query).length === 0) {
       throw new HttpException("Неправильный запрос", HttpStatus.BAD_REQUEST);
     }
@@ -51,6 +51,7 @@ export class UsersService {
     }
 
     await this.userRepository.destroy({ where: { id } });
+    await this.profileService.deleteProfile(user.id);
 
     return user;
   }

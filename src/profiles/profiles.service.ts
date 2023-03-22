@@ -34,4 +34,16 @@ export class ProfilesService {
 
     return profile;
   }
+
+  async deleteProfile(id: number): Promise<Profile> {
+    const profile = await this.profileRepository.findByPk(id);
+
+    if (!profile) {
+      throw new HttpException("Профиль не найден", HttpStatus.NOT_FOUND);
+    }
+
+    await this.profileRepository.destroy({ where: { id } });
+
+    return profile;
+  }
 }
