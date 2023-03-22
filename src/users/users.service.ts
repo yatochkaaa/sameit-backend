@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { CreateProfileDto } from "src/profiles/dto/create-profile.dto";
+import { ProfileDto } from "src/profiles/dto/profile.dto";
 import { ProfilesService } from "src/profiles/profiles.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { User, UserRole } from "./users.model";
@@ -12,7 +12,7 @@ export class UsersService {
     private profileService: ProfilesService
   ) {}
 
-  async createUser(dto: CreateUserDto & CreateProfileDto): Promise<User> {
+  async createUser(dto: CreateUserDto & ProfileDto): Promise<User> {
     const profile = await this.profileService.createProfile({
       firstName: dto.firstName,
       lastName: dto.lastName,
@@ -33,16 +33,12 @@ export class UsersService {
     return users;
   }
 
-  async getUsersByRole(role: UserRole): Promise<User[]> {
-    if (!role) {
+  async getUsersByFilter(query): Promise<User[]> {
+    if (Object.keys(query).length === 0) {
       throw new HttpException("Неправильный запрос", HttpStatus.BAD_REQUEST);
     }
 
-    if (role && !Object.values(UserRole).includes(role)) {
-      throw new HttpException("Роль не найдена", HttpStatus.NOT_FOUND);
-    }
-
-    const users = await this.userRepository.findAll({ where: { role } });
+    const users = await this.userRepository.findAll({ where: { ...query } });
 
     return users;
   }

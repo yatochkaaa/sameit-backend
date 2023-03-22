@@ -7,7 +7,7 @@ import {
   Param,
   Query,
 } from "@nestjs/common";
-import { CreateProfileDto } from "src/profiles/dto/create-profile.dto";
+import { ProfileDto } from "src/profiles/dto/profile.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UserRole } from "./users.model";
 import { UsersService } from "./users.service";
@@ -17,7 +17,7 @@ export class UsersController {
   constructor(private userService: UsersService) {}
 
   @Post("registration")
-  create(@Body() dto: CreateUserDto & CreateProfileDto) {
+  create(@Body() dto: CreateUserDto & ProfileDto) {
     return this.userService.createUser(dto);
   }
 
@@ -27,8 +27,8 @@ export class UsersController {
   }
 
   @Post()
-  getByRole(@Query("role") role: UserRole) {
-    return this.userService.getUsersByRole(role);
+  getByFilter(@Query() query) {
+    return this.userService.getUsersByFilter(query);
   }
 
   @Delete(":id")
