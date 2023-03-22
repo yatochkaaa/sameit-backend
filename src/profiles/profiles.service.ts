@@ -14,7 +14,7 @@ export class ProfilesService {
     return profile;
   }
 
-  async getProfile(id) {
+  async getProfile(id: number) {
     const profile = await this.profileRepository.findByPk(id);
     return profile;
   }
