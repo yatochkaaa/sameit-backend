@@ -14,24 +14,8 @@ export class ProfilesService {
     return profile;
   }
 
-  async getAllProfiles(): Promise<Profile[]> {
-    const profiles = await this.profileRepository.findAll();
-    return profiles;
-  }
-
-  async updateProfile(id: number, updatedProfile: ProfileDto): Promise<Profile> {
+  async getProfile(id) {
     const profile = await this.profileRepository.findByPk(id);
-
-    if (!profile) {
-      throw new HttpException("Профиль не найден.", HttpStatus.NOT_FOUND);
-    }
-
-    for (const key in updatedProfile) {
-      profile[key] = updatedProfile[key];
-    }
-
-    profile.save();
-
     return profile;
   }
 

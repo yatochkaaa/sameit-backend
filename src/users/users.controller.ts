@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Query,
+  Put,
 } from "@nestjs/common";
 import { ProfileDto } from "src/profiles/dto/profile.dto";
 import { UserDto } from "./dto/user.dto";
@@ -28,6 +29,11 @@ export class UsersController {
   @Post()
   getByFilter(@Query() query: UserDto) {
     return this.userService.getUsersByFilter(query);
+  }
+
+  @Put(":id")
+  async update(@Param("id") id: number, @Body() updatedUser: UserDto & ProfileDto) {
+    return this.userService.updateUser(id, updatedUser);
   }
 
   @Delete(":id")

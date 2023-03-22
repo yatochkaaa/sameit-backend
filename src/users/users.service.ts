@@ -43,6 +43,33 @@ export class UsersService {
     return users;
   }
 
+  async updateUser(
+    id: number,
+    updatedUser: UserDto & ProfileDto
+  ): Promise<User> {
+    const user = await this.userRepository.findByPk(id);
+    const profile = await this.profileService.getProfile(user.profileId);
+
+    if (!user) {
+      throw new HttpException("Пользователь не найден.", HttpStatus.NOT_FOUND);
+    }
+
+    for (const key in updatedUser) {
+      if (user.dataValues.hasOwnProperty(key)) {
+        user[key] = updatedUser[key];
+      } else if (profile.dataValues.hasOwnProperty(key)) {
+        profile[key] = updatedUser[key];
+      } else {
+        throw new HttpException("Неправильный запрос", HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    user.save();
+    profile.save();
+
+    return user;
+  }
+
   async deleteUser(id: number): Promise<User> {
     const user = await this.userRepository.findByPk(id);
 
